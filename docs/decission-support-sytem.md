@@ -342,6 +342,200 @@ Factory nesting (factory inside factory) creates uncontrolled records. For SAW c
 | 24 | Auto-filter: `watch` with 300ms debounce instead of manual refresh button | ☐ |
 | 25 | Frontend `computed` import: must be in `<script setup lang="ts">` block, not separate `<script>` | ☐ |
 | 26 | Controller `setRootView()` is global state — use layout resolver in `app.ts` instead | ☐ |
+| 27 | Seeders must generate actual files (PDFs/covers), never write fake paths to DB | ☐ |
+| 28 | JSON API endpoints: use `fetch()` with CSRF token, not Inertia `useForm().post()` | ☐ |
+| 29 | PDF viewer: use `vue-pdf-embed` + `pdfjs-dist`, not `<iframe>` — browser ignores fragment changes | ☐ |
+| 30 | `vue-pdf-embed` `:scale` only affects DPI — wrap with CSS `transform: scale()` for visual zoom | ☐ |
+| 31 | Fortify `'home'` config must match an actual route, or registration redirects to 404 | ☐ |
+| 32 | Registration `CreateNewUser` must set `peran` (role) explicitly, not rely on DB default | ☐ |
+| 33 | Bookmark toggle: use create/delete, not `updateOrCreate` — enables unbookmark | ☐ |
+| 34 | Dashboard card props: check whether backend returns model vs nested relation (e.g. `rec.judul` not `rec.buku.judul`) | ☐ |
+
+---
+
+## Phase 11: Seeding (Real Files on Disk)
+
+### 11.1 Never Write Fake Paths to the Database
+
+If your seeder writes `file_pdf = 'buku_pdf/sample-3.pdf'` but no file actually exists at that path, every iframe/image tag will show broken content (403/404).
+
+**Always generate actual files during seeding:**
+
+```php
+Storage::disk('public')->put($filename, Pdf::loadHTML($html)->output());
+```
+
+### 11.2 Generate Placeholder Covers with GD
+
+When real cover images aren't available, generate colored placeholder PNGs:
+
+```php
+$img = imagecreatetruecolor(400, 600);
+$bg = imagecolorallocate($img, $r, $g, $b);
+imagefilledrectangle($img, 0, 0, 400, 600, $bg);
+imagestring($img, 5, $x, $y, $judul, $white);
+imagepng($img, $path);
+imagedestroy($img);
+```
+
+Use an array of 6-8 distinct background colors, cycling through `$index % count($colors)`. This gives each book a unique visual identity even without real covers.
+
+### 11.3 Clean Up Before Reseeding
+
+Always call `Storage::disk('public')->deleteDirectory('sampul')` before regenerating. Otherwise dead files accumulate.
+
+---
+
+## Phase 12: JSON API Calls (Not Inertia)
+
+### 12.1 Use `fetch()` for Actions That Return JSON
+
+Inertia's `useForm().post()` expects an Inertia page response (`Inertia\Response` or `RedirectResponse`). If the backend returns `JsonResponse`, the browser shows:
+
+> All Inertia requests must receive a valid Inertia response, however a plain JSON response was received.
+
+**Fix: use plain `fetch()` with CSRF:**
+
+```ts
+const csrfToken = () => {
+    const el = document.querySelector('meta[name="csrf-token"]');
+    return el?.getAttribute('content') ?? '';
+};
+
+const handleToggle = async () => {
+    const res = await fetch('/app/favorit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken(),
+        },
+        body: JSON.stringify({ buku_id: buku.id }),
+    });
+    const data = await res.json();
+    isFavorit.value = data.status === 'added';
+};
+```
+
+### 12.2 Toggle Pattern: Create OR Delete, Not Upsert
+
+For bookmark/favorite toggles, `updateOrCreate` can never delete — the button can only add, never remove. Use explicit create/delete:
+
+```php
+$existing = MarkahBuku::where(...)->first();
+if ($existing) {
+    $existing->delete();
+    return response()->json(['status' => 'removed']);
+}
+MarkahBuku::create([...]);
+return response()->json(['status' => 'added']);
+```
+
+---
+
+## Phase 13: PDF Viewer (vue-pdf-embed)
+
+### 13.1 Install and Configure
+
+```bash
+npm install vue-pdf-embed pdfjs-dist
+cp node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/
+```
+
+```ts
+// resources/js/app.ts
+import { GlobalWorkerOptions } from 'pdfjs-dist';
+GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+```
+
+### 13.2 Why Not `<iframe>`?
+
+Browsers only read `#page=` from the iframe's initial URL. Navigating `currentPage` and updating the iframe `:src` triggers a full reload of the entire PDF — no smooth page flip.
+
+`vue-pdf-embed` renders individual `<canvas>` elements per page via PDF.js. Changing the `:page` prop swaps the rendered page instantly.
+
+### 13.3 The `:scale` Prop Only Affects Render DPI
+
+`vue-pdf-embed`'s `:scale` controls canvas pixel density, not visual size. The canvas dimensions (CSS `width`/`height`) are set programmatically by the component based on page aspect ratio.
+
+For actual visual zoom, **wrap in a `transform: scale()` container:**
+
+```vue
+<div :style="{ transform: `scale(${scale})`, transformOrigin: 'top center' }">
+    <VuePdfEmbed :source="pdfSource" :page="currentPage" :scale="scale" />
+</div>
+```
+
+Pass high `:scale` (e.g. 2.0) for crisp rendering when zoomed in.
+
+### 13.4 Sync Page with URL Query
+
+```ts
+watch(currentPage, (page) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('halaman', String(page));
+    window.history.replaceState({}, '', url.toString());
+});
+```
+
+Read `?halaman=` on mount to restore the last-visited page (useful for bookmark links).
+
+---
+
+## Phase 14: Landing Page & Registration
+
+### 14.1 Registration: Three Changes Needed
+
+**A) Enable the feature in `config/fortify.php`:**
+```php
+Features::registration(),  // uncomment
+```
+
+**B) Default new users to the correct role:**
+```php
+// app/Actions/Fortify/CreateNewUser.php
+return User::create([
+    'name' => $input['name'],
+    'email' => $input['email'],
+    'password' => $input['password'],
+    'peran' => Peran::User,  // explicit, not DB default
+]);
+```
+
+**C) Fix the `'home'` redirect — Fortify uses it for post-registration:**
+```php
+// config/fortify.php
+'home' => '/app/dasbor',  // not '/dashboard' which doesn't exist
+```
+
+### 14.2 Add a Register Link to the Login Page
+
+```vue
+<TextLink :href="register()">Daftar</TextLink>
+```
+
+Run `php artisan wayfinder:generate` to create the route function, then import it.
+
+### 14.3 Landing Page
+
+Replace the default Laravel `/` page with a proper hero + features section. Show "Daftar Gratis" / "Masuk" for guests, "Dashboard" / "Jelajahi Buku" for authenticated users.
+
+---
+
+## Phase 15: Dashboard Card Props
+
+### 15.1 Check the Shape of Backend Data
+
+The backend may return a `Buku` model directly, but the frontend might expect a `BukuFavorit` wrapper:
+
+```ts
+// ❌ rec is Buku, not BukuFavorit — rec.buku is undefined
+<p>{{ rec.buku?.judul }}</p>
+
+// ✅ Access fields directly on the model
+<p>{{ rec.judul }}</p>
+```
+
+Always trace from controller through to Inertia props — the model shape at each level determines the template path.
 
 ---
 

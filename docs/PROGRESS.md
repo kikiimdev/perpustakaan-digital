@@ -479,6 +479,14 @@ Tracked from `docs/decission-support-sytem.md`:
 | 24 | Auto-filter: `watch` with 300ms debounce instead of manual refresh button | ✅ |
 | 25 | Frontend `computed` import: must be in `<script setup lang="ts">` block | ✅ |
 | 26 | Controller `setRootView()` is global state — use layout resolver in `app.ts` instead | ✅ |
+| 27 | Seeders must generate actual files (PDFs/covers), never write fake paths to DB | ✅ |
+| 28 | JSON API endpoints: use `fetch()` with CSRF token, not Inertia `useForm().post()` | ✅ |
+| 29 | PDF viewer: use `vue-pdf-embed` + `pdfjs-dist`, not `<iframe>` | ✅ |
+| 30 | `vue-pdf-embed` `:scale` only affects DPI — wrap with CSS `transform: scale()` for visual zoom | ✅ |
+| 31 | Fortify `'home'` config must match an actual route | ✅ |
+| 32 | Registration `CreateNewUser` must set `peran` explicitly | ✅ |
+| 33 | Bookmark toggle: use create/delete, not `updateOrCreate` — enables unbookmark | ✅ |
+| 34 | Dashboard card props: check model shape (raw vs nested relation) | ✅ |
 
 ---
 
