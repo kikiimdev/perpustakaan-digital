@@ -139,7 +139,11 @@ class BacaBukuController extends Controller
             'catatan' => $request->catatan,
         ]);
 
-        return response()->json(['status' => 'added']);
+        return response()->json([
+            'status' => 'added',
+            'halaman' => $request->halaman,
+            'catatan' => $request->catatan,
+        ]);
     }
 
     public function catatStatistik(CatatStatistikRequest $request): JsonResponse
