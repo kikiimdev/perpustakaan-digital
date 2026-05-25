@@ -5,7 +5,14 @@ import { ref, watch } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import type { Buku } from '@/types';
 
 const props = defineProps<{
@@ -25,7 +32,11 @@ let timeout: ReturnType<typeof setTimeout>;
 watch(cari, (val) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
-        router.get('/admin/buku', { cari: val || undefined }, { preserveState: true, replace: true });
+        router.get(
+            '/admin/buku',
+            { cari: val || undefined },
+            { preserveState: true, replace: true },
+        );
     }, 300);
 });
 </script>
@@ -33,7 +44,7 @@ watch(cari, (val) => {
 <template>
     <Head title="Manajemen Buku" />
 
-    <div class="p-6 space-y-6">
+    <div class="space-y-6 p-6">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-semibold">Manajemen Buku</h1>
             <Link href="/admin/buku/create">
@@ -42,8 +53,14 @@ watch(cari, (val) => {
         </div>
 
         <div class="relative max-w-sm">
-            <Search class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input v-model="cari" placeholder="Cari judul buku..." class="pl-9" />
+            <Search
+                class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            />
+            <Input
+                v-model="cari"
+                placeholder="Cari judul buku..."
+                class="pl-9"
+            />
         </div>
 
         <Card>
@@ -60,13 +77,15 @@ watch(cari, (val) => {
                     </TableHeader>
                     <TableBody>
                         <TableRow v-for="item in buku.data" :key="item.id">
-                            <TableCell class="font-medium">{{ item.judul }}</TableCell>
+                            <TableCell class="font-medium">{{
+                                item.judul
+                            }}</TableCell>
                             <TableCell>{{ item.penulis?.nama }}</TableCell>
                             <TableCell>
                                 <span
                                     v-for="k in item.kategori"
                                     :key="k.id"
-                                    class="mr-1 text-xs bg-muted px-2 py-0.5 rounded"
+                                    class="mr-1 rounded bg-muted px-2 py-0.5 text-xs"
                                 >
                                     {{ k.nama }}
                                 </span>
@@ -74,23 +93,34 @@ watch(cari, (val) => {
                             <TableCell>{{ item.jumlah_halaman }}</TableCell>
                             <TableCell class="space-x-2">
                                 <Link :href="`/admin/buku/${item.id}`">
-                                    <Button variant="ghost" size="sm">Detail</Button>
+                                    <Button variant="ghost" size="sm"
+                                        >Detail</Button
+                                    >
                                 </Link>
                                 <Link :href="`/admin/buku/${item.id}/edit`">
-                                    <Button variant="outline" size="sm">Edit</Button>
+                                    <Button variant="outline" size="sm"
+                                        >Edit</Button
+                                    >
                                 </Link>
                                 <Button
                                     variant="destructive"
                                     size="sm"
                                     :disabled="deleteForm.processing"
-                                    @click="deleteForm.delete(`/admin/buku/${item.id}`)"
+                                    @click="
+                                        deleteForm.delete(
+                                            `/admin/buku/${item.id}`,
+                                        )
+                                    "
                                 >
                                     Hapus
                                 </Button>
                             </TableCell>
                         </TableRow>
                         <TableRow v-if="buku.data.length === 0">
-                            <TableCell colspan="5" class="text-center text-muted-foreground">
+                            <TableCell
+                                colspan="5"
+                                class="text-center text-muted-foreground"
+                            >
                                 Belum ada buku.
                             </TableCell>
                         </TableRow>
@@ -99,7 +129,10 @@ watch(cari, (val) => {
             </CardContent>
         </Card>
 
-        <div v-if="buku.last_page > 1" class="flex items-center justify-center gap-2">
+        <div
+            v-if="buku.last_page > 1"
+            class="flex items-center justify-center gap-2"
+        >
             <template v-for="link in buku.links" :key="link.label">
                 <Button
                     v-if="link.url"
@@ -107,7 +140,7 @@ watch(cari, (val) => {
                     size="sm"
                     as-child
                 >
-                    <Link :href="link.url" v-html="link.label" />
+                    <Link :href="link.url">{{ link.label }}</Link>
                 </Button>
             </template>
         </div>

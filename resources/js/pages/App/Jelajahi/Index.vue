@@ -27,10 +27,14 @@ let timeout: ReturnType<typeof setTimeout>;
 function filter() {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
-        router.get('/app/jelajahi', {
-            cari: cari.value || undefined,
-            kategori: kategoriAktif.value ?? undefined,
-        }, { preserveState: true, replace: true });
+        router.get(
+            '/app/jelajahi',
+            {
+                cari: cari.value || undefined,
+                kategori: kategoriAktif.value ?? undefined,
+            },
+            { preserveState: true, replace: true },
+        );
     }, 300);
 }
 
@@ -45,13 +49,19 @@ function pilihKategori(id: number | null) {
 <template>
     <Head title="Jelajahi Buku" />
 
-    <div class="p-6 space-y-6">
+    <div class="space-y-6 p-6">
         <h1 class="text-2xl font-semibold">Jelajahi Buku</h1>
 
-        <div class="flex flex-col sm:flex-row gap-4">
-            <div class="relative flex-1 max-w-sm">
-                <Search class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input v-model="cari" placeholder="Cari judul buku..." class="pl-9" />
+        <div class="flex flex-col gap-4 sm:flex-row">
+            <div class="relative max-w-sm flex-1">
+                <Search
+                    class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                />
+                <Input
+                    v-model="cari"
+                    placeholder="Cari judul buku..."
+                    class="pl-9"
+                />
             </div>
         </div>
 
@@ -74,22 +84,50 @@ function pilihKategori(id: number | null) {
             </Badge>
         </div>
 
-        <div v-if="buku.data.length" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            <Link v-for="b in buku.data" :key="b.id" :href="`/app/buku/${b.id}`">
-                <Card class="hover:shadow-md transition-shadow h-full cursor-pointer">
+        <div
+            v-if="buku.data.length"
+            class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
+        >
+            <Link
+                v-for="b in buku.data"
+                :key="b.id"
+                :href="`/app/buku/${b.id}`"
+            >
+                <Card
+                    class="h-full cursor-pointer transition-shadow hover:shadow-md"
+                >
                     <CardHeader class="p-3">
-                        <div v-if="b.sampul" class="aspect-[2/3] bg-muted rounded overflow-hidden mb-2">
-                            <img :src="`/storage/${b.sampul}`" :alt="b.judul" class="w-full h-full object-cover" />
+                        <div
+                            v-if="b.sampul"
+                            class="mb-2 aspect-[2/3] overflow-hidden rounded bg-muted"
+                        >
+                            <img
+                                :src="`/storage/${b.sampul}`"
+                                :alt="b.judul"
+                                class="h-full w-full object-cover"
+                            />
                         </div>
-                        <div v-else class="aspect-[2/3] bg-muted rounded flex items-center justify-center mb-2">
+                        <div
+                            v-else
+                            class="mb-2 flex aspect-[2/3] items-center justify-center rounded bg-muted"
+                        >
                             <BookOpen class="h-8 w-8 text-muted-foreground" />
                         </div>
-                        <CardTitle class="text-sm line-clamp-2">{{ b.judul }}</CardTitle>
+                        <CardTitle class="line-clamp-2 text-sm">{{
+                            b.judul
+                        }}</CardTitle>
                     </CardHeader>
                     <CardContent class="p-3 pt-0">
-                        <p class="text-xs text-muted-foreground">{{ b.penulis?.nama }}</p>
-                        <div class="flex flex-wrap gap-1 mt-2">
-                            <Badge v-for="k in b.kategori" :key="k.id" variant="secondary" class="text-[10px]">
+                        <p class="text-xs text-muted-foreground">
+                            {{ b.penulis?.nama }}
+                        </p>
+                        <div class="mt-2 flex flex-wrap gap-1">
+                            <Badge
+                                v-for="k in b.kategori"
+                                :key="k.id"
+                                variant="secondary"
+                                class="text-[10px]"
+                            >
                                 {{ k.nama }}
                             </Badge>
                         </div>
@@ -98,11 +136,14 @@ function pilihKategori(id: number | null) {
             </Link>
         </div>
 
-        <div v-else class="text-center text-muted-foreground py-12">
+        <div v-else class="py-12 text-center text-muted-foreground">
             Tidak ada buku yang ditemukan.
         </div>
 
-        <div v-if="buku.last_page > 1" class="flex items-center justify-center gap-2">
+        <div
+            v-if="buku.last_page > 1"
+            class="flex items-center justify-center gap-2"
+        >
             <template v-for="link in buku.links" :key="link.label">
                 <Button
                     v-if="link.url"
@@ -110,7 +151,7 @@ function pilihKategori(id: number | null) {
                     size="sm"
                     as-child
                 >
-                    <Link :href="link.url" v-html="link.label" />
+                    <Link :href="link.url">{{ link.label }}</Link>
                 </Button>
             </template>
         </div>

@@ -19,7 +19,7 @@ defineProps<{
 <template>
     <Head :title="`Penulis: ${penulis.nama}`" />
 
-    <div class="p-6 max-w-3xl space-y-6">
+    <div class="max-w-3xl space-y-6 p-6">
         <Link href="/admin/penulis">
             <Button variant="outline" size="sm">
                 <ArrowLeft class="mr-2 h-4 w-4" />
@@ -28,12 +28,17 @@ defineProps<{
         </Link>
 
         <div class="flex items-start gap-4">
-            <div class="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+            <div
+                class="flex h-16 w-16 items-center justify-center rounded-full bg-muted"
+            >
                 <User class="h-8 w-8 text-muted-foreground" />
             </div>
             <div class="flex-1">
                 <h1 class="text-2xl font-semibold">{{ penulis.nama }}</h1>
-                <p v-if="penulis.biografi" class="mt-2 text-muted-foreground leading-relaxed">
+                <p
+                    v-if="penulis.biografi"
+                    class="mt-2 leading-relaxed text-muted-foreground"
+                >
                     {{ penulis.biografi }}
                 </p>
                 <p v-else class="mt-2 text-sm text-muted-foreground italic">
@@ -50,33 +55,46 @@ defineProps<{
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <div v-if="buku.data.length" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div
+                    v-if="buku.data.length"
+                    class="grid grid-cols-2 gap-3 md:grid-cols-3"
+                >
                     <Link
                         v-for="b in buku.data"
                         :key="b.id"
                         :href="`/admin/buku/${b.id}`"
-                        class="block rounded border p-3 hover:bg-muted/50 transition-colors"
+                        class="block rounded border p-3 transition-colors hover:bg-muted/50"
                     >
-                        <p class="font-medium text-sm truncate">{{ b.judul }}</p>
-                        <div class="flex flex-wrap gap-1 mt-1">
+                        <p class="truncate text-sm font-medium">
+                            {{ b.judul }}
+                        </p>
+                        <div class="mt-1 flex flex-wrap gap-1">
                             <span
                                 v-for="k in b.kategori"
                                 :key="k.id"
-                                class="text-[10px] px-1.5 py-0.5 rounded bg-muted"
+                                class="rounded bg-muted px-1.5 py-0.5 text-[10px]"
                             >
                                 {{ k.nama }}
                             </span>
                         </div>
-                        <p class="text-xs text-muted-foreground mt-1">{{ b.jumlah_halaman }} hlm</p>
+                        <p class="mt-1 text-xs text-muted-foreground">
+                            {{ b.jumlah_halaman }} hlm
+                        </p>
                     </Link>
                 </div>
-                <p v-else class="text-sm text-muted-foreground py-4 text-center">
+                <p
+                    v-else
+                    class="py-4 text-center text-sm text-muted-foreground"
+                >
                     Belum ada buku.
                 </p>
             </CardContent>
         </Card>
 
-        <div v-if="buku.last_page > 1" class="flex items-center justify-center gap-2">
+        <div
+            v-if="buku.last_page > 1"
+            class="flex items-center justify-center gap-2"
+        >
             <template v-for="link in buku.links" :key="link.label">
                 <Button
                     v-if="link.url"
@@ -84,7 +102,7 @@ defineProps<{
                     size="sm"
                     as-child
                 >
-                    <Link :href="link.url" v-html="link.label" />
+                    <Link :href="link.url">{{ link.label }}</Link>
                 </Button>
             </template>
         </div>

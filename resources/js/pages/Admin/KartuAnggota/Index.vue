@@ -5,7 +5,14 @@ import { ref, watch } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import type { User } from '@/types';
 
 const props = defineProps<{
@@ -24,7 +31,11 @@ let timeout: ReturnType<typeof setTimeout>;
 watch(cari, (val) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
-        router.get('/admin/kartu-anggota', { cari: val || undefined }, { preserveState: true, replace: true });
+        router.get(
+            '/admin/kartu-anggota',
+            { cari: val || undefined },
+            { preserveState: true, replace: true },
+        );
     }, 300);
 });
 </script>
@@ -32,12 +43,18 @@ watch(cari, (val) => {
 <template>
     <Head title="Kartu Anggota" />
 
-    <div class="p-6 space-y-6">
+    <div class="space-y-6 p-6">
         <h1 class="text-2xl font-semibold">Cetak Kartu Anggota</h1>
 
         <div class="relative max-w-sm">
-            <Search class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input v-model="cari" placeholder="Cari nama atau email..." class="pl-9" />
+            <Search
+                class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            />
+            <Input
+                v-model="cari"
+                placeholder="Cari nama atau email..."
+                class="pl-9"
+            />
         </div>
 
         <Card>
@@ -55,13 +72,20 @@ watch(cari, (val) => {
                             <TableCell>{{ user.name }}</TableCell>
                             <TableCell>{{ user.email }}</TableCell>
                             <TableCell>
-                                <Link :href="`/admin/kartu-anggota/cetak/${user.id}`">
-                                    <Button variant="outline" size="sm">Cetak</Button>
+                                <Link
+                                    :href="`/admin/kartu-anggota/cetak/${user.id}`"
+                                >
+                                    <Button variant="outline" size="sm"
+                                        >Cetak</Button
+                                    >
                                 </Link>
                             </TableCell>
                         </TableRow>
                         <TableRow v-if="users.data.length === 0">
-                            <TableCell colspan="3" class="text-center text-muted-foreground">
+                            <TableCell
+                                colspan="3"
+                                class="text-center text-muted-foreground"
+                            >
                                 Belum ada anggota.
                             </TableCell>
                         </TableRow>
@@ -70,7 +94,10 @@ watch(cari, (val) => {
             </CardContent>
         </Card>
 
-        <div v-if="users.last_page > 1" class="flex items-center justify-center gap-2">
+        <div
+            v-if="users.last_page > 1"
+            class="flex items-center justify-center gap-2"
+        >
             <template v-for="link in users.links" :key="link.label">
                 <Button
                     v-if="link.url"
@@ -78,7 +105,7 @@ watch(cari, (val) => {
                     size="sm"
                     as-child
                 >
-                    <Link :href="link.url" v-html="link.label" />
+                    <Link :href="link.url">{{ link.label }}</Link>
                 </Button>
             </template>
         </div>

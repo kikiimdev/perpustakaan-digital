@@ -1,5 +1,3 @@
-import type { Buku } from './buku';
-
 export type StatistikPengguna = {
     bacaan_bulan_ini: number;
     total_halaman: number;

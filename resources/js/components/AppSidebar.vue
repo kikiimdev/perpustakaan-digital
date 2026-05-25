@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookMarked, BookOpen, Bookmark, ClipboardList, Heart, IdCard, LayoutGrid, Search, Users } from 'lucide-vue-next';
+import {
+    BookOpen,
+    Bookmark,
+    ClipboardList,
+    Heart,
+    IdCard,
+    LayoutGrid,
+    Search,
+    Users,
+} from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
@@ -33,13 +42,21 @@ const sidebarHome = computed(() => {
 const mainNavItems = computed<NavItem[]>(() => {
     const items: Record<Peran, NavItem[]> = {
         super_admin: [
-            { title: 'Kelola Admin', href: '/super-admin/kelola-admin', icon: Users },
+            {
+                title: 'Kelola Admin',
+                href: '/super-admin/kelola-admin',
+                icon: Users,
+            },
         ],
         admin: [
             { title: 'Manajemen Buku', href: '/admin/buku', icon: BookOpen },
             { title: 'Penulis', href: '/admin/penulis', icon: Users },
             { title: 'Laporan', href: '/admin/laporan', icon: ClipboardList },
-            { title: 'Kartu Anggota', href: '/admin/kartu-anggota', icon: IdCard },
+            {
+                title: 'Kartu Anggota',
+                href: '/admin/kartu-anggota',
+                icon: IdCard,
+            },
         ],
         user: [
             { title: 'Dasbor', href: '/app/dasbor', icon: LayoutGrid },
