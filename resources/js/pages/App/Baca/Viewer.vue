@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
 import { ArrowLeft, Bookmark, CheckCheck, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-vue-next';
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import VuePdfEmbed from 'vue-pdf-embed';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +19,7 @@ const visitedPages = new Set<number>();
 const bookmarkStatus = ref<'added' | 'removed' | null>(null);
 const scale = ref(1.0);
 
-const bookmarkedPages = new Set(props.markah.map((m) => m.halaman));
+const bookmarkedPages = reactive(new Set(props.markah.map((m) => m.halaman)));
 const isBookmarked = computed(() => bookmarkedPages.has(currentPage.value));
 
 const urlParams = new URLSearchParams(window.location.search);
