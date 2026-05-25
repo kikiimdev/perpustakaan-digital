@@ -6,3 +6,6 @@
 
 # Laporan
 - For PDF exports: create separate individual PDF exports per report (e.g., Buku Ditambahkan, Buku Terbanyak Dibaca, Buku Terfavorit) rather than combining all reports into one PDF. Each report should have its own downloadable PDF. Confidence: 0.70
+
+# Database
+- Avoid database-specific SQL functions in `whereRaw()` — this app uses SQLite for testing and PostgreSQL for production. Functions like `strftime()` (SQLite-only) break on PostgreSQL; use `to_char()`/`EXTRACT()`/`DATE_TRUNC()` for Postgres or Eloquent's database-agnostic methods. Confidence: 0.75
