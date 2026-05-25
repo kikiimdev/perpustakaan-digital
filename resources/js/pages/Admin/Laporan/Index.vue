@@ -48,6 +48,7 @@ const exportPdf = (jenis: string) => {
 const formatPeriode = (val: string) => {
     const [y, m] = val.split('-');
     const months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
     return `${months[Number(m)]} ${y}`;
 };
 

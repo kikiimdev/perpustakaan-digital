@@ -24,8 +24,10 @@ const isBookmarked = computed(() => bookmarkedPages.has(currentPage.value));
 
 const urlParams = new URLSearchParams(window.location.search);
 const halamanParam = urlParams.get('halaman');
+
 if (halamanParam) {
     const page = parseInt(halamanParam);
+
     if (page >= 1 && page <= totalPages.value) {
         currentPage.value = page;
     }
@@ -59,6 +61,7 @@ const zoomOut = () => {
 
 const csrfToken = () => {
     const el = document.querySelector('meta[name="csrf-token"]');
+
     return el?.getAttribute('content') ?? '';
 };
 
@@ -77,6 +80,7 @@ const handleSimpanMarkah = async () => {
     });
     const data = await res.json();
     bookmarkStatus.value = data.status;
+
     if (data.status === 'added') {
         bookmarkedPages.add(currentPage.value);
     } else {
@@ -85,7 +89,10 @@ const handleSimpanMarkah = async () => {
 };
 
 const handleCatatStatistik = async () => {
-    if (visitedPages.size === 0) return;
+    if (visitedPages.size === 0) {
+return;
+}
+
     await fetch('/app/catat-halaman', {
         method: 'POST',
         headers: {

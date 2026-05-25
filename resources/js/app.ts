@@ -1,10 +1,10 @@
 import { createInertiaApp } from '@inertiajs/vue3';
+import { GlobalWorkerOptions } from 'pdfjs-dist';
 import { initializeTheme } from '@/composables/useAppearance';
 import AppLayout from '@/layouts/AppLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { initializeFlashToast } from '@/lib/flashToast';
-import { GlobalWorkerOptions } from 'pdfjs-dist';
 
 GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 

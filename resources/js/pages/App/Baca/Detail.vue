@@ -17,6 +17,7 @@ const loading = ref(false);
 
 const csrfToken = () => {
     const el = document.querySelector('meta[name="csrf-token"]');
+
     return el?.getAttribute('content') ?? '';
 };
 

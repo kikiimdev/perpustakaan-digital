@@ -26,6 +26,7 @@ const sidebarHome = computed(() => {
         admin: '/admin/buku',
         user: '/app/dasbor',
     };
+
     return routes[peran.value];
 });
 
@@ -47,6 +48,7 @@ const mainNavItems = computed<NavItem[]>(() => {
             { title: 'Markah', href: '/app/markah', icon: Bookmark },
         ],
     };
+
     return items[peran.value];
 });
 
