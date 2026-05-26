@@ -164,9 +164,9 @@ const progressPercent = computed(() =>
         </div>
 
         <!-- PDF -->
-        <div class="flex flex-1 justify-center overflow-auto bg-muted/30 py-4">
-            <div :style="{ transform: `scale(${scale})`, transformOrigin: 'top center' }" class="inline-block">
-                <VuePdfEmbed :source="pdfSource" :page="currentPage" :scale="scale" class="shadow-lg" />
+        <div class="flex flex-1 justify-center overflow-auto overscroll-contain bg-muted/30 py-4">
+            <div class="w-full max-w-2xl">
+                <VuePdfEmbed :source="pdfSource" :page="currentPage" :scale="scale" class="shadow-lg [&_canvas]:w-full [&_canvas]:h-auto" />
             </div>
         </div>
 
