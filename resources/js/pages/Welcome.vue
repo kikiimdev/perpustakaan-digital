@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { BookOpen, Library, LogIn, UserPlus } from 'lucide-vue-next';
+import { BookOpen, Library, LogIn, UserPlus, Eye, Heart } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { login } from '@/routes';
+import type { Buku } from '@/types';
+
+defineProps<{
+    recentBooks?: Buku[];
+    mostReadBooks?: Buku[];
+    mostFavoriteBooks?: Buku[];
+}>();
 </script>
 
 <template>
@@ -116,6 +123,127 @@ import { login } from '@/routes';
                         <p class="mt-2 text-sm text-muted-foreground">
                             Lacak berapa buku dan halaman yang sudah Anda baca. Lihat progres dan tetap termotivasi.
                         </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Book Showcase -->
+        <section class="mx-auto max-w-7xl px-6 py-24">
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl font-bold tracking-tight">Jelajahi Koleksi Kami</h2>
+                <p class="mt-4 text-muted-foreground">Temukan buku-buku terbaik yang sedang tren bulan ini.</p>
+            </div>
+
+            <div class="space-y-16">
+                <!-- Most Recent -->
+                <div v-if="recentBooks && recentBooks.length > 0">
+                    <h3 class="mb-6 flex items-center gap-2 text-xl font-semibold">
+                        <BookOpen class="h-5 w-5 text-primary" />
+                        Baru Ditambahkan
+                    </h3>
+                    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <Link
+                            v-for="book in recentBooks"
+                            :key="book.id"
+                            :href="`/buku/${book.id}`"
+                            class="group flex flex-col overflow-hidden rounded-xl border bg-card transition-all hover:shadow-md"
+                        >
+                            <div class="aspect-[3/4] w-full bg-muted">
+                                <img 
+                                    v-if="book.sampul" 
+                                    :src="book.sampul" 
+                                    :alt="book.judul" 
+                                    class="h-full w-full object-cover"
+                                />
+                                <div v-else class="flex h-full w-full items-center justify-center">
+                                    <BookOpen class="h-12 w-12 text-muted-foreground/50" />
+                                </div>
+                            </div>
+                            <div class="flex flex-1 flex-col p-4">
+                                <h4 class="line-clamp-2 font-semibold group-hover:text-primary">{{ book.judul }}</h4>
+                                <p class="mt-1 text-sm text-muted-foreground">{{ book.penulis?.nama }}</p>
+                                <div class="mt-auto pt-4 flex flex-wrap gap-1">
+                                    <span v-for="k in book.kategori?.slice(0, 2)" :key="k.id" class="text-xs rounded bg-muted px-2 py-0.5">
+                                        {{ k.nama }}
+                                    </span>
+                                </div>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
+
+                <!-- Most Read -->
+                <div v-if="mostReadBooks && mostReadBooks.length > 0">
+                    <h3 class="mb-6 flex items-center gap-2 text-xl font-semibold">
+                        <Eye class="h-5 w-5 text-primary" />
+                        Paling Banyak Dibaca Bulan Ini
+                    </h3>
+                    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <Link
+                            v-for="book in mostReadBooks"
+                            :key="book.id"
+                            :href="`/buku/${book.id}`"
+                            class="group flex flex-col overflow-hidden rounded-xl border bg-card transition-all hover:shadow-md"
+                        >
+                            <div class="aspect-[3/4] w-full bg-muted">
+                                <img 
+                                    v-if="book.sampul" 
+                                    :src="book.sampul" 
+                                    :alt="book.judul" 
+                                    class="h-full w-full object-cover"
+                                />
+                                <div v-else class="flex h-full w-full items-center justify-center">
+                                    <BookOpen class="h-12 w-12 text-muted-foreground/50" />
+                                </div>
+                            </div>
+                            <div class="flex flex-1 flex-col p-4">
+                                <h4 class="line-clamp-2 font-semibold group-hover:text-primary">{{ book.judul }}</h4>
+                                <p class="mt-1 text-sm text-muted-foreground">{{ book.penulis?.nama }}</p>
+                                <div class="mt-auto pt-4 flex flex-wrap gap-1">
+                                    <span v-for="k in book.kategori?.slice(0, 2)" :key="k.id" class="text-xs rounded bg-muted px-2 py-0.5">
+                                        {{ k.nama }}
+                                    </span>
+                                </div>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
+
+                <!-- Most Favorite -->
+                <div v-if="mostFavoriteBooks && mostFavoriteBooks.length > 0">
+                    <h3 class="mb-6 flex items-center gap-2 text-xl font-semibold">
+                        <Heart class="h-5 w-5 text-primary" />
+                        Paling Difavoritkan Bulan Ini
+                    </h3>
+                    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <Link
+                            v-for="book in mostFavoriteBooks"
+                            :key="book.id"
+                            :href="`/buku/${book.id}`"
+                            class="group flex flex-col overflow-hidden rounded-xl border bg-card transition-all hover:shadow-md"
+                        >
+                            <div class="aspect-[3/4] w-full bg-muted">
+                                <img 
+                                    v-if="book.sampul" 
+                                    :src="book.sampul" 
+                                    :alt="book.judul" 
+                                    class="h-full w-full object-cover"
+                                />
+                                <div v-else class="flex h-full w-full items-center justify-center">
+                                    <BookOpen class="h-12 w-12 text-muted-foreground/50" />
+                                </div>
+                            </div>
+                            <div class="flex flex-1 flex-col p-4">
+                                <h4 class="line-clamp-2 font-semibold group-hover:text-primary">{{ book.judul }}</h4>
+                                <p class="mt-1 text-sm text-muted-foreground">{{ book.penulis?.nama }}</p>
+                                <div class="mt-auto pt-4 flex flex-wrap gap-1">
+                                    <span v-for="k in book.kategori?.slice(0, 2)" :key="k.id" class="text-xs rounded bg-muted px-2 py-0.5">
+                                        {{ k.nama }}
+                                    </span>
+                                </div>
+                            </div>
+                        </Link>
                     </div>
                 </div>
             </div>

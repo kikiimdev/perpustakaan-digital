@@ -15,13 +15,13 @@ createInertiaApp({
     layout: (name) => {
         switch (true) {
             case name === 'Welcome':
+            case name === 'Buku/Preview':
+            case name === 'Admin/KartuAnggota/Cetak':
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):
                 return [AppLayout, SettingsLayout];
-            case name === 'Admin/KartuAnggota/Cetak':
-                return null;
             default:
                 return AppLayout;
         }

@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
-import { ArrowLeft, Bookmark, CheckCheck, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-vue-next';
+import {
+    ArrowLeft,
+    Bookmark,
+    CheckCheck,
+    ChevronLeft,
+    ChevronRight,
+    ZoomIn,
+    ZoomOut,
+} from 'lucide-vue-next';
 import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import VuePdfEmbed from 'vue-pdf-embed';
 import { Button } from '@/components/ui/button';
@@ -14,7 +22,8 @@ const props = defineProps<{
 
 const currentPage = ref(1);
 const totalPages = ref(props.buku.jumlah_halaman);
-const pdfSource = `/storage/${props.buku.file_pdf}`;
+const pdfSource = props.buku.file_pdf;
+const pdfError = ref<string | null>(null);
 const visitedPages = new Set<number>();
 const bookmarkStatus = ref<'added' | 'removed' | null>(null);
 const scale = ref(1.0);
@@ -90,8 +99,8 @@ const handleSimpanMarkah = async () => {
 
 const handleCatatStatistik = async () => {
     if (visitedPages.size === 0) {
-return;
-}
+        return;
+    }
 
     await fetch('/app/catat-halaman', {
         method: 'POST',
@@ -117,7 +126,9 @@ onBeforeUnmount(() => {
 });
 
 const progressPercent = computed(() =>
-    totalPages.value > 0 ? Math.round((currentPage.value / totalPages.value) * 100) : 0
+    totalPages.value > 0
+        ? Math.round((currentPage.value / totalPages.value) * 100)
+        : 0,
 );
 </script>
 
@@ -126,7 +137,9 @@ const progressPercent = computed(() =>
 
     <div class="flex h-[calc(100vh-4rem)] flex-col">
         <!-- Header -->
-        <div class="flex shrink-0 items-center justify-between border-b bg-background p-4">
+        <div
+            class="flex shrink-0 items-center justify-between border-b bg-background p-4"
+        >
             <div class="flex items-center gap-3">
                 <a :href="`/app/buku/${buku.id}`">
                     <Button variant="ghost" size="icon">
@@ -134,56 +147,133 @@ const progressPercent = computed(() =>
                     </Button>
                 </a>
                 <div>
-                    <h1 class="max-w-md truncate font-medium">{{ buku.judul }}</h1>
-                    <p class="text-sm text-muted-foreground">{{ buku.penulis?.nama }}</p>
+                    <h1 class="max-w-md truncate font-medium">
+                        {{ buku.judul }}
+                    </h1>
+                    <p class="text-sm text-muted-foreground">
+                        {{ buku.penulis?.nama }}
+                    </p>
                 </div>
             </div>
 
             <Button
-                :variant="isBookmarked && bookmarkStatus !== 'removed' ? 'default' : 'outline'"
+                :variant="
+                    isBookmarked && bookmarkStatus !== 'removed'
+                        ? 'default'
+                        : 'outline'
+                "
                 size="sm"
                 @click="handleSimpanMarkah"
             >
-                <Bookmark v-if="!isBookmarked || bookmarkStatus === 'removed'" class="mr-1 h-4 w-4" />
+                <Bookmark
+                    v-if="!isBookmarked || bookmarkStatus === 'removed'"
+                    class="mr-1 h-4 w-4"
+                />
                 <CheckCheck v-else class="mr-1 h-4 w-4" />
-                {{ isBookmarked && bookmarkStatus !== 'removed' ? 'Halaman ' + currentPage + ' Ditandai' : 'Tandai Halaman ' + currentPage }}
+                {{
+                    isBookmarked && bookmarkStatus !== 'removed'
+                        ? 'Halaman ' + currentPage + ' Ditandai'
+                        : 'Tandai Halaman ' + currentPage
+                }}
             </Button>
         </div>
 
         <!-- Zoom bar -->
-        <div class="flex justify-center gap-1 border-b bg-muted/50 px-4 py-1.5 shrink-0">
-            <Button variant="ghost" size="icon" class="h-7 w-7" @click="zoomOut" :disabled="scale <= 0.5">
+        <div
+            class="flex shrink-0 justify-center gap-1 border-b bg-muted/50 px-4 py-1.5"
+        >
+            <Button
+                variant="ghost"
+                size="icon"
+                class="h-7 w-7"
+                @click="zoomOut"
+                :disabled="scale <= 0.5"
+            >
                 <ZoomOut class="h-4 w-4" />
             </Button>
-            <span class="flex w-12 items-center justify-center text-xs tabular-nums">
+            <span
+                class="flex w-12 items-center justify-center text-xs tabular-nums"
+            >
                 {{ Math.round(scale * 100) }}%
             </span>
-            <Button variant="ghost" size="icon" class="h-7 w-7" @click="zoomIn" :disabled="scale >= 2.0">
+            <Button
+                variant="ghost"
+                size="icon"
+                class="h-7 w-7"
+                @click="zoomIn"
+                :disabled="scale >= 2.0"
+            >
                 <ZoomIn class="h-4 w-4" />
             </Button>
         </div>
 
         <!-- PDF -->
-        <div class="flex flex-1 justify-center overflow-auto overscroll-contain bg-muted/30 py-4">
+        <div
+            class="flex flex-1 justify-center overflow-auto overscroll-contain bg-muted/30 py-4"
+        >
             <div class="w-full max-w-2xl">
-                <VuePdfEmbed :source="pdfSource" :page="currentPage" :scale="scale" class="shadow-lg [&_canvas]:w-full [&_canvas]:h-auto" />
+                <div v-if="pdfError" class="rounded-lg border border-red-200 bg-red-50 p-4 text-center text-red-600">
+                    <p class="font-semibold">Gagal memuat PDF via Viewer</p>
+                    <p class="text-sm">{{ pdfError }}</p>
+                    <p class="mt-4 text-sm font-semibold">Mencoba fallback iframe...</p>
+                </div>
+                
+                <!-- Native iframe fallback to test if the browser can load it at all -->
+                <iframe 
+                    v-if="pdfError"
+                    :src="pdfSource" 
+                    class="h-[70vh] w-full rounded-lg border shadow-lg"
+                    title="PDF Fallback"
+                ></iframe>
+
+                <VuePdfEmbed
+                    v-else
+                    :source="pdfSource"
+                    :page="currentPage"
+                    :scale="scale"
+                    @rendered="pdfError = null"
+                    @error="(e: any) => { pdfError = e.message || 'Unknown error'; console.error('PDF Error:', e); }"
+                    class="shadow-lg [&_canvas]:h-auto [&_canvas]:w-full"
+                />
             </div>
         </div>
 
         <!-- Footer navigation -->
-        <div class="flex shrink-0 items-center justify-between border-t bg-background p-3">
-            <Button variant="outline" size="sm" :disabled="currentPage <= 1" @click="goToPage(currentPage - 1)">
+        <div
+            class="flex shrink-0 items-center justify-between border-t bg-background p-3"
+        >
+            <Button
+                variant="outline"
+                size="sm"
+                :disabled="currentPage <= 1"
+                @click="goToPage(currentPage - 1)"
+            >
                 <ChevronLeft class="h-4 w-4" />
                 Sebelumnya
             </Button>
 
             <div class="flex items-center gap-2">
-                <Input v-model.number="currentPage" type="number" min="1" :max="totalPages" class="h-8 w-16 text-center" />
-                <span class="text-sm text-muted-foreground">/ {{ totalPages }}</span>
-                <span class="ml-2 text-xs text-muted-foreground">({{ progressPercent }}%)</span>
+                <Input
+                    v-model.number="currentPage"
+                    type="number"
+                    min="1"
+                    :max="totalPages"
+                    class="h-8 w-16 text-center"
+                />
+                <span class="text-sm text-muted-foreground"
+                    >/ {{ totalPages }}</span
+                >
+                <span class="ml-2 text-xs text-muted-foreground"
+                    >({{ progressPercent }}%)</span
+                >
             </div>
 
-            <Button variant="outline" size="sm" :disabled="currentPage >= totalPages" @click="goToPage(currentPage + 1)">
+            <Button
+                variant="outline"
+                size="sm"
+                :disabled="currentPage >= totalPages"
+                @click="goToPage(currentPage + 1)"
+            >
                 Selanjutnya
                 <ChevronRight class="h-4 w-4" />
             </Button>

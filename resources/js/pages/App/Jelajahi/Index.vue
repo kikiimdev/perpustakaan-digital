@@ -102,7 +102,7 @@ function pilihKategori(id: number | null) {
                             class="mb-2 aspect-[2/3] overflow-hidden rounded bg-muted"
                         >
                             <img
-                                :src="`/storage/${b.sampul}`"
+                                :src="b.sampul"
                                 :alt="b.judul"
                                 class="h-full w-full object-cover"
                             />
@@ -151,8 +151,15 @@ function pilihKategori(id: number | null) {
                     size="sm"
                     as-child
                 >
-                    <Link :href="link.url">{{ link.label }}</Link>
+                    <Link :href="link.url" v-html="link.label"></Link>
                 </Button>
+                <Button
+                    v-else
+                    variant="outline"
+                    size="sm"
+                    disabled
+                    v-html="link.label"
+                />
             </template>
         </div>
     </div>
