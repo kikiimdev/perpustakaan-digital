@@ -11,28 +11,21 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@perpustakaan.test',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-            'peran' => Peran::SuperAdmin,
-        ]);
+        $users = [
+            ['name' => 'Super Admin', 'username' => 'superadmin', 'peran' => Peran::SuperAdmin],
+            ['name' => 'Admin', 'username' => 'admin', 'peran' => Peran::Admin],
+            ['name' => 'Pengguna', 'username' => 'user', 'peran' => Peran::User],
+        ];
 
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@perpustakaan.test',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-            'peran' => Peran::Admin,
-        ]);
-
-        User::create([
-            'name' => 'Pengguna',
-            'email' => 'user@perpustakaan.test',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-            'peran' => Peran::User,
-        ]);
+        foreach ($users as $userData) {
+            User::create([
+                'name' => $userData['name'],
+                'username' => $userData['username'],
+                'email' => $userData['username'].'@perpustakaan.test',
+                'password' => Hash::make('stimik'),
+                'email_verified_at' => now(),
+                'peran' => $userData['peran'],
+            ]);
+        }
     }
 }

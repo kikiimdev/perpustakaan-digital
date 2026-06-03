@@ -48,17 +48,21 @@ defineOptions({
             </div>
 
             <div class="grid gap-2">
-                <Label for="email">Email address</Label>
+                <Label for="username">NRP</Label>
                 <Input
-                    id="email"
-                    type="email"
+                    id="username"
+                    type="text"
                     required
                     :tabindex="2"
-                    autocomplete="email"
-                    name="email"
-                    placeholder="email@example.com"
+                    autocomplete="username"
+                    name="username"
+                    placeholder="Masukkan NRP"
                 />
-                <InputError :message="errors.email" />
+                <p class="text-xs text-muted-foreground">
+                    Email akan otomatis dibuat sebagai
+                    username@perpustakaan.test
+                </p>
+                <InputError :message="errors.username" />
             </div>
 
             <div class="grid gap-2">

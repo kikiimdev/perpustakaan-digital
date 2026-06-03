@@ -53,7 +53,7 @@ defineProps<{
                 <Link v-for="fav in favorit" :key="fav.id" :href="`/app/buku/${fav.buku_id}`">
                     <Card class="hover:shadow-md transition-shadow cursor-pointer overflow-hidden">
                         <div class="aspect-[2/3] bg-muted flex items-center justify-center overflow-hidden">
-                            <img v-if="fav.buku?.sampul" :src="`/storage/${fav.buku.sampul}`" :alt="fav.buku.judul" class="w-full h-full object-cover" />
+                            <img v-if="fav.buku?.sampul" :src="fav.buku.sampul" :alt="fav.buku.judul" class="w-full h-full object-cover" />
                             <BookOpen v-else class="h-8 w-8 text-muted-foreground/50" />
                         </div>
                         <CardContent class="p-3 text-center">
@@ -71,7 +71,7 @@ defineProps<{
                 <Link v-for="rec in rekomendasi" :key="rec.id" :href="`/app/buku/${rec.id}`">
                     <Card class="hover:shadow-md transition-shadow cursor-pointer overflow-hidden">
                         <div class="aspect-[2/3] bg-muted flex items-center justify-center overflow-hidden">
-                            <img v-if="rec.sampul" :src="`/storage/${rec.sampul}`" :alt="rec.judul" class="w-full h-full object-cover" />
+                            <img v-if="rec.sampul" :src="rec.sampul" :alt="rec.judul" class="w-full h-full object-cover" />
                             <BookOpen v-else class="h-8 w-8 text-muted-foreground/50" />
                         </div>
                         <CardContent class="p-3 text-center">

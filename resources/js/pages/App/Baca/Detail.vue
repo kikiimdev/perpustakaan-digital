@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { Heart } from 'lucide-vue-next';
+import { Bookmark, Heart } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -84,14 +84,25 @@ const toggleFavorit = async () => {
         </Link>
 
         <div v-if="markah.length" class="space-y-2">
-            <h2 class="text-lg font-semibold">Markah</h2>
+            <h2 class="text-lg font-semibold">Markah Saya</h2>
             <div class="space-y-2">
-                <Card v-for="m in markah" :key="m.id">
-                    <CardContent class="p-3 flex justify-between items-center">
-                        <span>Halaman {{ m.halaman }}</span>
-                        <span v-if="m.catatan" class="text-sm text-muted-foreground">{{ m.catatan }}</span>
-                    </CardContent>
-                </Card>
+                <Link 
+                    v-for="m in markah" 
+                    :key="m.id" 
+                    :href="`/app/baca/${buku.id}?halaman=${m.halaman}`"
+                >
+                    <Card class="cursor-pointer transition-shadow hover:shadow-md hover:bg-muted/50">
+                        <CardContent class="p-3 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <Bookmark class="h-4 w-4 text-primary" />
+                                <span class="font-medium">Halaman {{ m.halaman }}</span>
+                            </div>
+                            <span v-if="m.catatan" class="text-sm text-muted-foreground line-clamp-1 max-w-[200px]">
+                                "{{ m.catatan }}"
+                            </span>
+                        </CardContent>
+                    </Card>
+                </Link>
             </div>
         </div>
     </div>

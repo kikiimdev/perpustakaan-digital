@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { Heart } from 'lucide-vue-next';
+import { BookOpen, Heart } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { BukuFavorit } from '@/types';
@@ -23,14 +23,18 @@ defineProps<{
 
         <div
             v-if="favorit.data.length"
-            class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
         >
             <Link
                 v-for="fav in favorit.data"
                 :key="fav.id"
                 :href="`/app/buku/${fav.buku_id}`"
             >
-                <Card class="cursor-pointer transition-shadow hover:shadow-md">
+                <Card class="cursor-pointer transition-shadow hover:shadow-md overflow-hidden">
+                    <div class="aspect-[2/3] bg-muted flex items-center justify-center overflow-hidden">
+                        <img v-if="fav.buku?.sampul" :src="fav.buku.sampul" :alt="fav.buku?.judul" class="w-full h-full object-cover" />
+                        <BookOpen v-else class="h-8 w-8 text-muted-foreground/50" />
+                    </div>
                     <CardHeader>
                         <CardTitle class="text-base">{{
                             fav.buku?.judul

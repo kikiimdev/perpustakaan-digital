@@ -46,18 +46,18 @@ defineProps<{
     >
         <div class="grid gap-6">
             <div class="grid gap-2">
-                <Label for="email">Email address</Label>
+                <Label for="username">NRP / Username</Label>
                 <Input
-                    id="email"
-                    type="email"
-                    name="email"
+                    id="username"
+                    type="text"
+                    name="username"
                     required
                     autofocus
                     :tabindex="1"
-                    autocomplete="email"
-                    placeholder="email@example.com"
+                    autocomplete="username"
+                    placeholder="Masukkan NRP / username Anda"
                 />
-                <InputError :message="errors.email" />
+                <InputError :message="errors.username" />
             </div>
 
             <div class="grid gap-2">
@@ -104,10 +104,13 @@ defineProps<{
 
         <div class="text-center text-sm text-muted-foreground">
             Belum punya akun?
-            <TextLink :href="register()" class="underline underline-offset-4" :tabindex="6">
+            <TextLink
+                :href="register()"
+                class="underline underline-offset-4"
+                :tabindex="6"
+            >
                 Daftar
             </TextLink>
         </div>
-
     </Form>
 </template>

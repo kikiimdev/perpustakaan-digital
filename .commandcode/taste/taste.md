@@ -12,7 +12,10 @@
 - Avoid database-specific SQL functions in `whereRaw()` — this app uses SQLite for testing and PostgreSQL for production. Functions like `strftime()` (SQLite-only) break on PostgreSQL; use `to_char()`/`EXTRACT()`/`DATE_TRUNC()` for Postgres or Eloquent's database-agnostic methods. Confidence: 0.75
 
 # File Storage
-- Resolve storage file URLs (e.g., `sampul`, `file_pdf`) in exactly one layer — either via model accessors using `Storage::url()` or in templates by prepending `/storage/`, never both. Double application causes broken URLs like `/storage//storage/sampul/...`. Prefer model accessors for consistency across all pages. Confidence: 0.75
+- Resolve storage file URLs (e.g., `sampul`, `file_pdf`) in exactly one layer — either via model accessors using `Storage::url()` or in templates by prepending `/storage/`, never both. Double application causes broken URLs like `/storage//storage/sampul/...`. Prefer model accessors for consistency across all pages. Confidence: 0.80
 
 # Pdfjs
 - Use local worker file (`/pdf.worker.min.mjs`) for pdfjs-dist instead of CDN. Confidence: 0.75
+
+# UI Layout
+- For book card grids with cover images, use dense responsive grid (`grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4`) with `aspect-[2/3]` image containers and `BookOpen` fallback icon — keeps covers proportional and thumbnail-sized rather than oversized. Confidence: 0.70
