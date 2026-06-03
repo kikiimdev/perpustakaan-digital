@@ -15,14 +15,14 @@ defineProps<{
 
 defineOptions({
     layout: {
-        title: 'Create an account',
-        description: 'Enter your details below to create your account',
+        title: 'Daftar akun',
+        description: 'Daftar akun baru untuk mengakses sistem.',
     },
 });
 </script>
 
 <template>
-    <Head title="Register" />
+    <Head title="Daftar" />
 
     <Form
         action="/register"
@@ -33,7 +33,7 @@ defineOptions({
     >
         <div class="grid gap-6">
             <div class="grid gap-2">
-                <Label for="name">Name</Label>
+                <Label for="name">Nama</Label>
                 <Input
                     id="name"
                     type="text"
@@ -42,7 +42,7 @@ defineOptions({
                     :tabindex="1"
                     autocomplete="name"
                     name="name"
-                    placeholder="Full name"
+                    placeholder="Nama lengkap"
                 />
                 <InputError :message="errors.name" />
             </div>
@@ -58,10 +58,10 @@ defineOptions({
                     name="username"
                     placeholder="Masukkan NRP"
                 />
-                <p class="text-xs text-muted-foreground">
+                <!-- <p class="text-xs text-muted-foreground">
                     Email akan otomatis dibuat sebagai
                     username@perpustakaan.test
-                </p>
+                </p> -->
                 <InputError :message="errors.username" />
             </div>
 
@@ -80,14 +80,14 @@ defineOptions({
             </div>
 
             <div class="grid gap-2">
-                <Label for="password_confirmation">Confirm password</Label>
+                <Label for="password_confirmation">Konfirmasi password</Label>
                 <PasswordInput
                     id="password_confirmation"
                     required
                     :tabindex="4"
                     autocomplete="new-password"
                     name="password_confirmation"
-                    placeholder="Confirm password"
+                    placeholder="Ketik ulang password"
                     :passwordrules="passwordRules"
                 />
                 <InputError :message="errors.password_confirmation" />
@@ -101,12 +101,12 @@ defineOptions({
                 data-test="register-user-button"
             >
                 <Spinner v-if="processing" />
-                Create account
+                Daftar
             </Button>
         </div>
 
         <div class="text-center text-sm text-muted-foreground">
-            Already have an account?
+            Sudah punya akun?
             <TextLink
                 :href="login()"
                 class="underline underline-offset-4"
