@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
                 'name' => $userData['name'],
                 'username' => $userData['username'],
                 'email' => $userData['username'].'@perpustakaan.test',
-                'password' => Hash::make('stimik'),
+                'password' => Hash::make('stmik'),
                 'email_verified_at' => now(),
                 'peran' => $userData['peran'],
             ]);
