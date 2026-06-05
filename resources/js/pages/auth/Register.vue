@@ -65,7 +65,7 @@ defineOptions({
                 <InputError :message="errors.username" />
             </div>
 
-            <div class="grid gap-2">
+            <div class="hidden gap-2">
                 <Label for="password">Password</Label>
                 <PasswordInput
                     id="password"
@@ -75,11 +75,12 @@ defineOptions({
                     name="password"
                     placeholder="Password"
                     :passwordrules="passwordRules"
+                    value="stmik"
                 />
                 <InputError :message="errors.password" />
             </div>
 
-            <div class="grid gap-2">
+            <div class="hidden gap-2">
                 <Label for="password_confirmation">Konfirmasi password</Label>
                 <PasswordInput
                     id="password_confirmation"
@@ -89,6 +90,7 @@ defineOptions({
                     name="password_confirmation"
                     placeholder="Ketik ulang password"
                     :passwordrules="passwordRules"
+                    value="stmik"
                 />
                 <InputError :message="errors.password_confirmation" />
             </div>
