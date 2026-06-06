@@ -71,7 +71,8 @@ class FortifyServiceProvider extends ServiceProvider
         ]));
 
         Fortify::registerView(fn () => Inertia::render('auth/Register', [
-            'passwordRules' => Password::defaults()->toPasswordRulesString(),
+            // 'passwordRules' => Password::defaults()->toPasswordRulesString(),
+            'passwordRules' => 'required|string|confirmed|min:5',
         ]));
 
         Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/TwoFactorChallenge'));

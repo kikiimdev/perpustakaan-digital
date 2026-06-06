@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
+import { reactive } from 'vue';
 import InputError from '@/components/InputError.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import TextLink from '@/components/TextLink.vue';
@@ -18,6 +19,11 @@ defineOptions({
         title: 'Daftar akun',
         description: 'Daftar akun baru untuk mengakses sistem.',
     },
+});
+
+const state = reactive({
+    password: 'stmik',
+    password_confirmation: 'stmik',
 });
 </script>
 
@@ -75,7 +81,7 @@ defineOptions({
                     name="password"
                     placeholder="Password"
                     :passwordrules="passwordRules"
-                    value="stmik"
+                    v-model="state.password"
                 />
                 <InputError :message="errors.password" />
             </div>
@@ -90,7 +96,7 @@ defineOptions({
                     name="password_confirmation"
                     placeholder="Ketik ulang password"
                     :passwordrules="passwordRules"
-                    value="stmik"
+                    v-model="state.password_confirmation"
                 />
                 <InputError :message="errors.password_confirmation" />
             </div>
