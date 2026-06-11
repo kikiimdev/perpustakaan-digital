@@ -31,7 +31,7 @@ class AdminController extends Controller
     public function store(AdminStoreRequest $request): RedirectResponse
     {
         User::create([
-            'name' => $request->name,
+            'nama_anggota' => $request->nama_anggota,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'email_verified_at' => now(),
@@ -56,7 +56,7 @@ class AdminController extends Controller
     public function update(AdminUpdateRequest $request, User $user): RedirectResponse
     {
         $data = [
-            'name' => $request->name,
+            'nama_anggota' => $request->nama_anggota,
             'email' => $request->email,
         ];
 

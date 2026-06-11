@@ -15,7 +15,7 @@ class KartuAnggotaController extends Controller
     {
         $users = User::where('peran', Peran::User)
             ->when($request->cari, fn ($q) => $q->where(fn ($sub) => $sub
-                ->where('name', 'like', "%{$request->cari}%")
+                ->where('nama_anggota', 'like', "%{$request->cari}%")
                 ->orWhere('email', 'like', "%{$request->cari}%")
             ))
             ->latest()

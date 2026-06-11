@@ -14,7 +14,7 @@ const props = defineProps<{
 const isEditing = !!props.admin;
 
 const form = useForm({
-    name: props.admin?.name ?? '',
+    nama_anggota: props.admin?.nama_anggota ?? '',
     email: props.admin?.email ?? '',
     password: '',
 });
@@ -31,34 +31,53 @@ const handleSubmit = () => {
 <template>
     <Head :title="isEditing ? 'Edit Admin' : 'Tambah Admin'" />
 
-    <div class="p-6 max-w-lg space-y-6">
+    <div class="max-w-lg space-y-6 p-6">
         <h1 class="text-2xl font-semibold">
             {{ isEditing ? 'Edit Admin' : 'Tambah Admin' }}
         </h1>
 
         <Card>
             <CardHeader>
-                <CardTitle>{{ isEditing ? 'Edit Data Admin' : 'Data Admin Baru' }}</CardTitle>
+                <CardTitle>{{
+                    isEditing ? 'Edit Data Admin' : 'Data Admin Baru'
+                }}</CardTitle>
             </CardHeader>
             <CardContent>
                 <form @submit.prevent="handleSubmit" class="space-y-4">
                     <div class="space-y-2">
-                        <Label for="name">Nama</Label>
-                        <Input id="name" v-model="form.name" required />
-                        <InputError :message="form.errors.name" />
+                        <Label for="nama_anggota">Nama</Label>
+                        <Input
+                            id="nama_anggota"
+                            v-model="form.nama_anggota"
+                            required
+                        />
+                        <InputError :message="form.errors.nama_anggota" />
                     </div>
 
                     <div class="space-y-2">
                         <Label for="email">Email</Label>
-                        <Input id="email" v-model="form.email" type="email" required />
+                        <Input
+                            id="email"
+                            v-model="form.email"
+                            type="email"
+                            required
+                        />
                         <InputError :message="form.errors.email" />
                     </div>
 
                     <div class="space-y-2">
                         <Label for="password">
-                            Password {{ isEditing ? '(kosongkan jika tidak diubah)' : '' }}
+                            Password
+                            {{
+                                isEditing ? '(kosongkan jika tidak diubah)' : ''
+                            }}
                         </Label>
-                        <Input id="password" v-model="form.password" type="password" :required="!isEditing" />
+                        <Input
+                            id="password"
+                            v-model="form.password"
+                            type="password"
+                            :required="!isEditing"
+                        />
                         <InputError :message="form.errors.password" />
                     </div>
 
@@ -66,7 +85,11 @@ const handleSubmit = () => {
                         <Button type="submit" :disabled="form.processing">
                             {{ isEditing ? 'Perbarui' : 'Simpan' }}
                         </Button>
-                        <Button type="button" variant="outline" @click="window.history.back()">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            @click="window.history.back()"
+                        >
                             Batal
                         </Button>
                     </div>

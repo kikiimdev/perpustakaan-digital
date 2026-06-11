@@ -39,36 +39,36 @@ const state = reactive({
     >
         <div class="grid gap-6">
             <div class="grid gap-2">
-                <Label for="name">Nama</Label>
+                <Label for="nama_anggota">Nama</Label>
                 <Input
-                    id="name"
+                    id="nama_anggota"
                     type="text"
                     required
                     autofocus
                     :tabindex="1"
                     autocomplete="name"
-                    name="name"
+                    name="nama_anggota"
                     placeholder="Nama lengkap"
                 />
-                <InputError :message="errors.name" />
+                <InputError :message="errors.nama_anggota" />
             </div>
 
             <div class="grid gap-2">
-                <Label for="username">NRP</Label>
+                <Label for="id_anggota">NRP</Label>
                 <Input
-                    id="username"
+                    id="id_anggota"
                     type="text"
                     required
                     :tabindex="2"
                     autocomplete="username"
-                    name="username"
+                    name="id_anggota"
                     placeholder="Masukkan NRP"
                 />
                 <!-- <p class="text-xs text-muted-foreground">
                     Email akan otomatis dibuat sebagai
                     username@perpustakaan.test
                 </p> -->
-                <InputError :message="errors.username" />
+                <InputError :message="errors.id_anggota" />
             </div>
 
             <div class="hidden gap-2">

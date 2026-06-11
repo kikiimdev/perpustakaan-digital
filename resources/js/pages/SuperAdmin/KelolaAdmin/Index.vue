@@ -42,7 +42,7 @@ const deleteForm = useForm({});
                     </TableHeader>
                     <TableBody>
                         <TableRow v-for="admin in admins" :key="admin.id">
-                            <TableCell>{{ admin.name }}</TableCell>
+                            <TableCell>{{ admin.nama_anggota }}</TableCell>
                             <TableCell>{{ admin.email }}</TableCell>
                             <TableCell class="space-x-2">
                                 <Link

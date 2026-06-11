@@ -9,6 +9,13 @@ import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { edit } from '@/routes/profile';
 import { send } from '@/routes/verification';
 
@@ -36,7 +43,7 @@ const user = computed(() => page.props.auth.user);
         <Heading
             variant="small"
             title="Profile"
-            description="Update your name and email address"
+            description="Perbarui informasi profil Anda"
         />
 
         <Form
@@ -45,17 +52,17 @@ const user = computed(() => page.props.auth.user);
             v-slot="{ errors, processing }"
         >
             <div class="grid gap-2">
-                <Label for="name">Name</Label>
+                <Label for="nama_anggota">Nama Anggota</Label>
                 <Input
-                    id="name"
+                    id="nama_anggota"
                     class="mt-1 block w-full"
-                    name="name"
-                    :default-value="user.name"
+                    name="nama_anggota"
+                    :default-value="user.nama_anggota"
                     required
                     autocomplete="name"
-                    placeholder="Full name"
+                    placeholder="Nama Lengkap"
                 />
-                <InputError class="mt-2" :message="errors.name" />
+                <InputError class="mt-2" :message="errors.nama_anggota" />
             </div>
 
             <div class="grid gap-2">
@@ -71,6 +78,48 @@ const user = computed(() => page.props.auth.user);
                     placeholder="Email address"
                 />
                 <InputError class="mt-2" :message="errors.email" />
+            </div>
+
+            <div class="grid gap-2">
+                <Label for="ttl">Tempat, Tanggal Lahir</Label>
+                <Input
+                    id="ttl"
+                    class="mt-1 block w-full"
+                    name="ttl"
+                    :default-value="user.ttl"
+                    placeholder="Contoh: Jakarta, 01 Januari 2000"
+                />
+                <InputError class="mt-2" :message="errors.ttl" />
+            </div>
+
+            <div class="grid gap-2">
+                <Label for="jenis_kelamin">Jenis Kelamin</Label>
+                <Select
+                    name="jenis_kelamin"
+                    :default-value="user.jenis_kelamin"
+                >
+                    <SelectTrigger id="jenis_kelamin" class="mt-1 w-full">
+                        <SelectValue placeholder="Pilih Jenis Kelamin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="laki-laki">Laki-laki</SelectItem>
+                        <SelectItem value="perempuan">Perempuan</SelectItem>
+                    </SelectContent>
+                </Select>
+                <InputError class="mt-2" :message="errors.jenis_kelamin" />
+            </div>
+
+            <div class="grid gap-2">
+                <Label for="no_telp">No. Telepon</Label>
+                <Input
+                    id="no_telp"
+                    type="tel"
+                    class="mt-1 block w-full"
+                    name="no_telp"
+                    :default-value="user.no_telp"
+                    placeholder="Nomor Telepon / WhatsApp"
+                />
+                <InputError class="mt-2" :message="errors.no_telp" />
             </div>
 
             <div v-if="page.props.mustVerifyEmail && !user.email_verified_at">

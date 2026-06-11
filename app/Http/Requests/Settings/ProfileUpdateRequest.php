@@ -17,6 +17,10 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return $this->profileRules($this->user()->id);
+        return array_merge($this->profileRules($this->user()->id), [
+            'ttl' => ['nullable', 'string', 'max:255'],
+            'jenis_kelamin' => ['nullable', 'string', 'in:laki-laki,perempuan'],
+            'no_telp' => ['nullable', 'string', 'max:20'],
+        ]);
     }
 }

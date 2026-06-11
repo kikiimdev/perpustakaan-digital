@@ -23,7 +23,7 @@ test('super admin can view list of admins', function () {
 test('super admin can create a new admin', function () {
     $this->actingAs($this->superAdmin)
         ->post('/super-admin/kelola-admin', [
-            'name' => 'New Admin',
+            'nama_anggota' => 'New Admin',
             'email' => 'newadmin@perpustakaan.test',
             'password' => 'password123',
         ])

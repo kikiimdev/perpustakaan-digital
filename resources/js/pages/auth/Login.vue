@@ -46,18 +46,18 @@ defineProps<{
     >
         <div class="grid gap-6">
             <div class="grid gap-2">
-                <Label for="username">NRP / Username</Label>
+                <Label for="id_anggota">NRP / Username</Label>
                 <Input
-                    id="username"
+                    id="id_anggota"
                     type="text"
-                    name="username"
+                    name="id_anggota"
                     required
                     autofocus
                     :tabindex="1"
                     autocomplete="username"
                     placeholder="Masukkan NRP / username Anda"
                 />
-                <InputError :message="errors.username" />
+                <InputError :message="errors.id_anggota" />
             </div>
 
             <div class="grid gap-2">
