@@ -6,7 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import type { Buku, Kategori } from '@/types';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import type { Buku, Kategori, Penulis } from '@/types';
 
 const props = defineProps<{
     buku: {
@@ -16,12 +23,15 @@ const props = defineProps<{
         links: { url: string | null; label: string; active: boolean }[];
     };
     kategori: Kategori[];
+    penulis: Penulis[];
     cari: string;
     kategoriTerpilih: number | null;
+    penulisTerpilih: number | null;
 }>();
 
 const cari = ref(props.cari);
 const kategoriAktif = ref(props.kategoriTerpilih);
+const penulisAktif = ref(props.penulisTerpilih ? props.penulisTerpilih.toString() : 'all');
 
 let timeout: ReturnType<typeof setTimeout>;
 function filter() {
@@ -32,6 +42,7 @@ function filter() {
             {
                 cari: cari.value || undefined,
                 kategori: kategoriAktif.value ?? undefined,
+                penulis: penulisAktif.value && penulisAktif.value !== 'all' ? Number(penulisAktif.value) : undefined,
             },
             { preserveState: true, replace: true },
         );
@@ -59,9 +70,23 @@ function pilihKategori(id: number | null) {
                 />
                 <Input
                     v-model="cari"
-                    placeholder="Cari judul buku..."
+                    placeholder="Cari judul atau penulis..."
                     class="pl-9"
                 />
+            </div>
+            
+            <div class="w-full sm:w-[250px]">
+                <Select v-model="penulisAktif" @update:model-value="filter()">
+                    <SelectTrigger class="w-full">
+                        <SelectValue placeholder="Semua Penulis" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">Semua Penulis</SelectItem>
+                        <SelectItem v-for="p in penulis" :key="p.id" :value="p.id.toString()">
+                            {{ p.nama }}
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
         </div>
 

@@ -10,6 +10,7 @@ use App\Models\Buku;
 use App\Models\BukuFavorit;
 use App\Models\Kategori;
 use App\Models\MarkahBuku;
+use App\Models\Penulis;
 use App\Models\RiwayatBaca;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -54,8 +55,14 @@ class BacaBukuController extends Controller
     public function jelajahi(Request $request): Response
     {
         $buku = Buku::with(['penulis', 'kategori'])
-            ->when($request->cari, fn ($q) => $q->where('judul', 'like', "%{$request->cari}%"))
+            ->when($request->cari, function ($q) use ($request) {
+                $q->where(function ($q2) use ($request) {
+                    $q2->where('judul', 'like', "%{$request->cari}%")
+                        ->orWhereHas('penulis', fn ($q3) => $q3->where('nama', 'like', "%{$request->cari}%"));
+                });
+            })
             ->when($request->kategori, fn ($q) => $q->whereHas('kategori', fn ($q2) => $q2->where('kategori.id', $request->kategori)))
+            ->when($request->penulis, fn ($q) => $q->where('penulis_id', $request->penulis))
             ->latest()
             ->paginate(12)
             ->appends($request->query());
@@ -63,8 +70,10 @@ class BacaBukuController extends Controller
         return Inertia::render('App/Jelajahi/Index', [
             'buku' => $buku,
             'kategori' => Kategori::orderBy('nama')->get(),
+            'penulis' => Penulis::orderBy('nama')->get(),
             'cari' => $request->cari ?? '',
             'kategoriTerpilih' => $request->kategori ? (int) $request->kategori : null,
+            'penulisTerpilih' => $request->penulis ? (int) $request->penulis : null,
         ]);
     }
 
