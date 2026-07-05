@@ -6,6 +6,7 @@ import {
     ClipboardList,
     Heart,
     IdCard,
+    LayoutDashboard,
     LayoutGrid,
     Search,
     Users,
@@ -32,7 +33,7 @@ const peran = computed<Peran>(() => page.props.auth?.user?.peran ?? 'user');
 const sidebarHome = computed(() => {
     const routes: Record<Peran, string> = {
         super_admin: '/super-admin/kelola-admin',
-        admin: '/admin/buku',
+        admin: '/admin/dasbor',
         user: '/app/dasbor',
     };
 
@@ -49,6 +50,7 @@ const mainNavItems = computed<NavItem[]>(() => {
             },
         ],
         admin: [
+            { title: 'Dasbor', href: '/admin/dasbor', icon: LayoutDashboard },
             { title: 'Manajemen Buku', href: '/admin/buku', icon: BookOpen },
             { title: 'Penulis', href: '/admin/penulis', icon: Users },
             { title: 'Laporan', href: '/admin/laporan', icon: ClipboardList },

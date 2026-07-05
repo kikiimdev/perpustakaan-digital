@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['user_id', 'buku_id', 'halaman_dibaca', 'tanggal'])]
 class RiwayatBaca extends Model
 {
+    use HasFactory;
+
     protected $table = 'riwayat_baca';
 
     protected function casts(): array

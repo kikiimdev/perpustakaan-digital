@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\Admin\BukuController;
+use App\Http\Controllers\Admin\DasborController;
 use App\Http\Controllers\Admin\KartuAnggotaController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\PenulisController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'peran:super_admin,admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('dasbor', [DasborController::class, 'index'])->name('dasbor.index');
+
     Route::resource('buku', BukuController::class);
     Route::post('penulis/cepat', [BukuController::class, 'tambahPenulisCepat'])->name('penulis.cepat');
     Route::post('kategori/cepat', [BukuController::class, 'tambahKategoriCepat'])->name('kategori.cepat');

@@ -60,4 +60,24 @@ class UserFactory extends Factory
             'two_factor_confirmed_at' => now(),
         ]);
     }
+
+    /**
+     * Indicate that the user is male.
+     */
+    public function lakiLaki(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'jenis_kelamin' => 'laki-laki',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is female.
+     */
+    public function perempuan(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'jenis_kelamin' => 'perempuan',
+        ]);
+    }
 }
