@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
-import { BookOpen, Download, FileText, Heart, Library } from 'lucide-vue-next';
+import { BookOpen, Download, FileText, FolderOpen, Heart, Library } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import type { Buku, BukuTerbanyakDibaca, BukuTerfavorit } from '@/types';
+import type { Buku, BukuPerKategori, BukuTerbanyakDibaca, BukuTerfavorit } from '@/types';
 
 const props = defineProps<{
     bulanAwal: string;
@@ -24,6 +24,7 @@ const props = defineProps<{
         total_buku: number;
     };
     bukuBaruDaftar: Buku[];
+    bukuPerKategori: BukuPerKategori[];
 }>();
 
 const bulanAwal = ref(props.bulanAwal);
@@ -217,6 +218,49 @@ const labelPeriode = computed(() => `${formatPeriode(bulanAwal.value)} — ${for
                     <span>Total Pengguna: <strong>{{ aktivitas.total_pengguna }}</strong></span>
                     <span>Total Buku: <strong>{{ aktivitas.total_buku }}</strong></span>
                 </div>
+            </CardContent>
+        </Card>
+
+        <!-- 5. Buku per Kategori -->
+        <Card>
+            <CardHeader class="flex flex-row items-center justify-between">
+                <CardTitle class="flex items-center gap-2">
+                    <FolderOpen class="h-4 w-4" />
+                    Buku per Kategori
+                </CardTitle>
+                <Button variant="outline" size="sm" @click="exportPdf('cetak-buku-per-kategori')">
+                    <Download class="mr-1 h-3 w-3" />
+                    PDF
+                </Button>
+            </CardHeader>
+            <CardContent>
+                <div v-if="bukuPerKategori.length" class="space-y-6">
+                    <div v-for="kat in bukuPerKategori" :key="kat.id" class="border rounded-md overflow-hidden">
+                        <div class="bg-muted px-4 py-2 font-semibold text-sm flex justify-between">
+                            <span>{{ kat.nama }}</span>
+                            <span>{{ kat.buku_count }} Buku</span>
+                        </div>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead class="w-12">No</TableHead>
+                                    <TableHead>Judul</TableHead>
+                                    <TableHead>Penulis</TableHead>
+                                    <TableHead class="w-24">Halaman</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                <TableRow v-for="(b, index) in kat.buku" :key="b.id">
+                                    <TableCell>{{ index + 1 }}</TableCell>
+                                    <TableCell class="font-medium">{{ b.judul }}</TableCell>
+                                    <TableCell>{{ b.penulis?.nama ?? '-' }}</TableCell>
+                                    <TableCell>{{ b.jumlah_halaman }}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </div>
+                </div>
+                <p v-else class="text-sm text-muted-foreground">Belum ada buku pada periode ini.</p>
             </CardContent>
         </Card>
     </div>

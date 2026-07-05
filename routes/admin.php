@@ -21,5 +21,6 @@ Route::middleware(['auth', 'peran:super_admin,admin'])->prefix('admin')->name('a
     Route::get('laporan/cetak-buku-ditambahkan', [LaporanController::class, 'cetakBukuDitambahkan'])->name('laporan.cetak-buku-ditambahkan');
     Route::get('laporan/cetak-buku-terbanyak-dibaca', [LaporanController::class, 'cetakBukuTerbanyakDibaca'])->name('laporan.cetak-buku-terbanyak-dibaca');
     Route::get('laporan/cetak-buku-terfavorit', [LaporanController::class, 'cetakBukuTerfavorit'])->name('laporan.cetak-buku-terfavorit');
+    Route::get('laporan/cetak-buku-per-kategori', [LaporanController::class, 'cetakBukuPerKategori'])->name('laporan.cetak-buku-per-kategori');
     Route::get('laporan/cetak-aktivitas-membaca', [LaporanController::class, 'cetakAktivitasMembaca'])->name('laporan.cetak-aktivitas-membaca');
 });

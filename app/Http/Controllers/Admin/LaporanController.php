@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Buku;
 use App\Models\BukuFavorit;
+use App\Models\Kategori;
 use App\Models\RiwayatBaca;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -28,6 +29,7 @@ class LaporanController extends Controller
         $bukuTerfavorit = $this->queryBukuTerfavorit($range);
         $aktivitas = $this->queryAktivitas($range);
         $bukuBaruDaftar = $this->queryBukuDitambahkan($range);
+        $bukuPerKategori = $this->queryBukuPerKategori($range);
 
         return Inertia::render('Admin/Laporan/Index', [
             'bulanAwal' => $bulanAwal,
@@ -37,6 +39,7 @@ class LaporanController extends Controller
             'bukuTerfavorit' => $bukuTerfavorit,
             'aktivitas' => $aktivitas,
             'bukuBaruDaftar' => $bukuBaruDaftar,
+            'bukuPerKategori' => $bukuPerKategori,
         ]);
     }
 
@@ -83,6 +86,21 @@ class LaporanController extends Controller
         $pdf = Pdf::loadView('pdf.buku-terfavorit', compact('periode', 'buku'));
 
         return $pdf->download("laporan-buku-terfavorit-{$bulanAwal}-{$bulanAkhir}.pdf");
+    }
+
+    public function cetakBukuPerKategori(Request $request)
+    {
+        $bulanAwal = $request->input('bulan_awal', now()->format('Y-m'));
+        $bulanAkhir = $request->input('bulan_akhir', now()->format('Y-m'));
+        $periode = "$bulanAwal s/d $bulanAkhir";
+
+        $range = $this->parseBulanRange($bulanAwal, $bulanAkhir);
+        $kategori = $this->queryBukuPerKategori($range);
+        $total = $kategori->sum('buku_count');
+
+        $pdf = Pdf::loadView('pdf.buku-per-kategori', compact('periode', 'kategori', 'total'));
+
+        return $pdf->download("laporan-buku-per-kategori-{$bulanAwal}-{$bulanAkhir}.pdf");
     }
 
     public function cetakAktivitasMembaca(Request $request)
@@ -163,5 +181,22 @@ class LaporanController extends Controller
             'total_pengguna' => User::count(),
             'total_buku' => Buku::count(),
         ];
+    }
+
+    private function queryBukuPerKategori(array $range)
+    {
+        return Kategori::whereHas('buku', function ($query) use ($range) {
+            $query->whereBetween('buku.created_at', $range);
+        })
+            ->withCount(['buku' => function ($query) use ($range) {
+                $query->whereBetween('buku.created_at', $range);
+            }])
+            ->with(['buku' => function ($query) use ($range) {
+                $query->whereBetween('buku.created_at', $range)
+                    ->with('penulis:id,nama')
+                    ->select('buku.id', 'buku.judul', 'buku.jumlah_halaman', 'buku.penulis_id');
+            }])
+            ->orderByDesc('buku_count')
+            ->get();
     }
 }

@@ -24,3 +24,19 @@ export type AktivitasMembaca = {
     total_pengguna: number;
     total_buku: number;
 };
+
+export type BukuPerKategori = {
+    id: number;
+    nama: string;
+    buku_count: number;
+    buku: Array<{
+        id: number;
+        judul: string;
+        jumlah_halaman: number;
+        penulis_id: number | null;
+        penulis: {
+            id: number;
+            nama: string;
+        } | null;
+    }>;
+};
